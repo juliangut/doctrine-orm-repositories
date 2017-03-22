@@ -17,7 +17,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Repository\RepositoryFactory;
 use Jgut\Doctrine\Repository\Factory\AbstractRepositoryFactory;
-use Jgut\Doctrine\Repository\RelationalRepository;
 
 /**
  * Relational entity repository factory.

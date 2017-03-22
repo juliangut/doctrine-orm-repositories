@@ -4,10 +4,7 @@
   "keywords": [
     "Doctrine2",
     "entity repository",
-    "document repository",
-    "ORM",
-    "MongoDB",
-    "CouchDB"
+    "ORM"
   ],
   "homepage": "https://github.com/juliangut/doctrine-orm-repositories",
   "license": "MIT",

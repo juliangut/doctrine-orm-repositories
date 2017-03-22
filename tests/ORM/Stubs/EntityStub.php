@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Jgut\Doctrine\Repository\ORM\Tests\Stubs;
 
 /**
- * Entity and document stub.
+ * Entity stub.
  */
-class EntityDocumentStub
+class EntityStub
 {
 }

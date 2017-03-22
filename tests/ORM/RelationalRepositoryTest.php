@@ -18,7 +18,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Jgut\Doctrine\Repository\ORM\RelationalRepository;
-use Jgut\Doctrine\Repository\ORM\Tests\Stubs\EntityDocumentStub;
+use Jgut\Doctrine\Repository\ORM\Tests\Stubs\EntityStub;
+use Jgut\Doctrine\Repository\ORM\Tests\Stubs\RepositoryStub;
 
 /**
  * Relational repository tests.
@@ -34,9 +35,21 @@ class RelationalRepositoryTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         /* @var EntityManager $manager */
 
-        $repository = new RelationalRepository($manager, new ClassMetadata(EntityDocumentStub::class));
+        $repository = new RelationalRepository($manager, new ClassMetadata(EntityStub::class));
 
-        static::assertEquals(EntityDocumentStub::class, $repository->getClassName());
+        static::assertEquals(EntityStub::class, $repository->getClassName());
+    }
+
+    public function testEntityManager()
+    {
+        $manager = $this->getMockBuilder(EntityManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        /* @var EntityManager $manager */
+
+        $repository = new RepositoryStub($manager, new ClassMetadata(EntityStub::class));
+
+        static::assertSame($manager, $repository->getManager());
     }
 
     /**
@@ -50,7 +63,7 @@ class RelationalRepositoryTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         /* @var EntityManager $manager */
 
-        $repository = new RelationalRepository($manager, new ClassMetadata(EntityDocumentStub::class));
+        $repository = new RelationalRepository($manager, new ClassMetadata(EntityStub::class));
 
         $repository->findPaginatedBy('');
     }
@@ -82,7 +95,7 @@ class RelationalRepositoryTest extends \PHPUnit_Framework_TestCase
             ->will(static::returnValue($queryBuilder));
         /* @var EntityManager $manager */
 
-        $repository = new RelationalRepository($manager, new ClassMetadata(EntityDocumentStub::class));
+        $repository = new RelationalRepository($manager, new ClassMetadata(EntityStub::class));
 
         static::assertEquals(10, $repository->countBy($queryBuilder));
 

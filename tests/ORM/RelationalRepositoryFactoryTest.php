@@ -15,8 +15,8 @@ namespace Jgut\Doctrine\Repository\ORM\Tests\Factory;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Jgut\Doctrine\Repository\ORM\RelationalRepository;
 use Jgut\Doctrine\Repository\ORM\RelationalRepositoryFactory;
-use Jgut\Doctrine\Repository\RelationalRepository;
 
 /**
  * Relational repository factory tests.
