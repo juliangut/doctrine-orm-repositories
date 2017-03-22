@@ -18,9 +18,9 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator as RelationalPaginator;
 use Jgut\Doctrine\Repository\Repository;
-use Jgut\Doctrine\Repository\Traits\EventsTrait;
-use Jgut\Doctrine\Repository\Traits\PaginatorTrait;
-use Jgut\Doctrine\Repository\Traits\RepositoryTrait;
+use Jgut\Doctrine\Repository\EventsTrait;
+use Jgut\Doctrine\Repository\PaginatorTrait;
+use Jgut\Doctrine\Repository\RepositoryTrait;
 use Rb\Specification\Doctrine\SpecificationAwareInterface;
 use Rb\Specification\Doctrine\SpecificationRepositoryTrait;
 
