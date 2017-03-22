@@ -17,13 +17,12 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Jgut\Doctrine\Repository\ORM\RelationalRepository;
 use Jgut\Doctrine\Repository\ORM\RelationalRepositoryFactory;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Relational repository factory tests.
- *
- * @group relational
  */
-class RelationalRepositoryFactoryTest extends \PHPUnit_Framework_TestCase
+class RelationalRepositoryFactoryTest extends TestCase
 {
     public function testCount()
     {

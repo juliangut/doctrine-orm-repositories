@@ -20,13 +20,12 @@ use Doctrine\ORM\QueryBuilder;
 use Jgut\Doctrine\Repository\ORM\RelationalRepository;
 use Jgut\Doctrine\Repository\ORM\Tests\Stubs\EntityStub;
 use Jgut\Doctrine\Repository\ORM\Tests\Stubs\RepositoryStub;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Relational repository tests.
- *
- * @group relational
  */
-class RelationalRepositoryTest extends \PHPUnit_Framework_TestCase
+class RelationalRepositoryTest extends TestCase
 {
     public function testEntityName()
     {

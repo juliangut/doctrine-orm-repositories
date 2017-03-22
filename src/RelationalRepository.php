@@ -17,7 +17,6 @@ use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator as RelationalPaginator;
-use Jgut\Doctrine\Repository\Pagination\RelationalAdapter;
 use Jgut\Doctrine\Repository\Repository;
 use Jgut\Doctrine\Repository\Traits\EventsTrait;
 use Jgut\Doctrine\Repository\Traits\PaginatorTrait;
@@ -98,7 +97,7 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
             }
         }
 
-        $adapter = new RelationalAdapter(new RelationalPaginator($queryBuilder->getQuery()));
+        $adapter = new RelationalPaginatorAdapter(new RelationalPaginator($queryBuilder->getQuery()));
 
         return $this->getPaginator($adapter, $itemsPerPage);
     }
