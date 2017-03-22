@@ -1,0 +1,91 @@
+{
+  "name": "juliangut/doctrine-orm-repositories",
+  "description": "Doctrine2 ORM utility entity repositories",
+  "keywords": [
+    "Doctrine2",
+    "entity repository",
+    "document repository",
+    "ORM",
+    "MongoDB",
+    "CouchDB"
+  ],
+  "homepage": "https://github.com/juliangut/doctrine-orm-repositories",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Julián Gutiérrez",
+      "email": "juliangut@gmail.com",
+      "homepage": "http://juliangut.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "source": "https://github.com/juliangut/doctrine-orm-repositories",
+    "issues": "https://github.com/juliangut/doctrine-orm-repositories/issues"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": "^7.0",
+    "doctrine/orm": "^2.4",
+    "juliangut/doctrine-base-repositories": "dev-master",
+    "rikbruil/doctrine-specification": "^1.2"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^2.0",
+    "humbug/humbug": "~1.0@dev",
+    "phpmetrics/phpmetrics": "^2.0",
+    "phpmd/phpmd": "^2.0",
+    "phpunit/phpunit": "^5.7|^6.0",
+    "phpunit/phpunit-mock-objects": "^3.2",
+    "sebastian/phpcpd": "^2.0",
+    "squizlabs/php_codesniffer": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Jgut\\Doctrine\\Repository\\ORM\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Jgut\\Doctrine\\Repository\\ORM\\Tests\\": "tests/ORM/"
+    }
+  },
+  "bin": [
+  ],
+  "config": {
+    "preferred-install": "dist"
+  },
+  "scripts": {
+    "php-lint": "php -l src && php -l tests",
+    "phpcs": "phpcs --standard=PSR2 src tests",
+    "phpcs-lint": "php-cs-fixer fix --dry-run --verbose",
+    "phpcpd": "phpcpd src",
+    "phpmd": "phpmd src text unusedcode,naming,design,controversial,codesize",
+    "phpmetrics": "phpmetrics --failure-condition='average.maintainabilityIndex < 50' src",
+    "phpmetrics-report": "phpmetrics --report-html=build/metrics/index.html --offline src",
+    "phpunit": "phpunit",
+    "phpunit-coverage": "phpunit --coverage-html build/coverage",
+    "phpunit-clover": "phpunit --coverage-clover build/logs/clover.xml",
+    "humbug": "humbug",
+    "qa": [
+      "@php-lint",
+      "@phpcs",
+      "@phpcs-lint",
+      "@phpcpd",
+      "@phpmd",
+      "@phpmetrics"
+    ],
+    "reports": [
+      "@phpmetrics-report",
+      "@phpunit-coverage"
+    ],
+    "fix": "php-cs-fixer fix --verbose",
+    "security": "composer outdated",
+    "test": [
+      "@php-lint",
+      "@phpunit",
+      "@humbug"
+    ]
+  }
+}
