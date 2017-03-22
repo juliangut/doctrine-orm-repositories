@@ -16,13 +16,19 @@ namespace Jgut\Doctrine\Repository\ORM;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Repository\RepositoryFactory;
-use Jgut\Doctrine\Repository\Factory\AbstractRepositoryFactory;
 
 /**
  * Relational entity repository factory.
  */
-class RelationalRepositoryFactory extends AbstractRepositoryFactory implements RepositoryFactory
+class RelationalRepositoryFactory implements RepositoryFactory
 {
+    /**
+     * Default repository class.
+     *
+     * @var string
+     */
+    protected $repositoryClassName;
+
     /**
      * The list of EntityRepository instances.
      *
@@ -35,7 +41,7 @@ class RelationalRepositoryFactory extends AbstractRepositoryFactory implements R
      */
     public function __construct()
     {
-        parent::__construct(RelationalRepository::class);
+        $this->repositoryClassName = RelationalRepository::class;
     }
 
     /**
@@ -66,7 +72,7 @@ class RelationalRepositoryFactory extends AbstractRepositoryFactory implements R
     private function createRepository(EntityManager $entityManager, $entityName)
     {
         $metadata = $entityManager->getClassMetadata($entityName);
-        $repositoryClassName = $metadata->customRepositoryClassName ?: $this->getDefaultRepositoryClassName();
+        $repositoryClassName = $metadata->customRepositoryClassName ?: $this->repositoryClassName;
 
         return new $repositoryClassName($entityManager, $metadata);
     }
