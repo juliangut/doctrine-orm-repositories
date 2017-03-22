@@ -29,10 +29,10 @@ use Rb\Specification\Doctrine\SpecificationRepositoryTrait;
  */
 class RelationalRepository extends EntityRepository implements Repository, SpecificationAwareInterface
 {
+    use SpecificationRepositoryTrait;
     use RepositoryTrait;
     use EventsTrait;
     use PaginatorTrait;
-    use SpecificationRepositoryTrait;
 
     /**
      * Class alias.
