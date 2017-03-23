@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Jgut\Doctrine\Repository\ORM\Tests\Factory;
+namespace Jgut\Doctrine\Repository\ORM\Tests;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
