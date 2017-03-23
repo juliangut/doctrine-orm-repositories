@@ -33,6 +33,7 @@
     "humbug/humbug": "~1.0@dev",
     "phpmetrics/phpmetrics": "^2.0",
     "phpmd/phpmd": "^2.0",
+    "phpstan/phpstan": "~0.6",
     "phpunit/phpunit": "^5.7|^6.0",
     "phpunit/phpunit-mock-objects": "^3.2",
     "sebastian/phpcpd": "^2.0",
@@ -58,6 +59,7 @@
     "phpcs": "phpcs --standard=PSR2 src tests",
     "phpcs-lint": "php-cs-fixer fix --dry-run --verbose",
     "phpcpd": "phpcpd src",
+    "phpstan": "phpstan analyse --level 1 src tests",
     "phpmd": "phpmd src text unusedcode,naming,design,controversial,codesize",
     "phpmetrics": "phpmetrics --failure-condition='average.maintainabilityIndex < 50' src",
     "phpmetrics-report": "phpmetrics --report-html=build/metrics/index.html --offline src",
@@ -71,6 +73,7 @@
       "@phpcs-lint",
       "@phpcpd",
       "@phpmd",
+      "@phpstan",
       "@phpmetrics"
     ],
     "reports": [

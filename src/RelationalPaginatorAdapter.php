@@ -39,7 +39,7 @@ class RelationalPaginatorAdapter implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getItems($offset, $itemCountPerPage)
+    public function getItems($offset, $itemCountPerPage): array
     {
         $this->paginator
             ->getQuery()
@@ -52,7 +52,7 @@ class RelationalPaginatorAdapter implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function count()
+    public function count(): int
     {
         return $this->paginator->count();
     }

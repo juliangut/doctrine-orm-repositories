@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Jgut\Doctrine\Repository\ORM\Tests\Stubs;
 
+use Doctrine\ORM\EntityManager;
 use Jgut\Doctrine\Repository\ORM\RelationalRepository;
 
 /**
@@ -20,7 +21,7 @@ use Jgut\Doctrine\Repository\ORM\RelationalRepository;
  */
 class RepositoryStub extends RelationalRepository
 {
-    public function getManager()
+    public function getManager(): EntityManager
     {
         return parent::getManager();
     }

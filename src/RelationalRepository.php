@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Jgut\Doctrine\Repository\ORM;
 
 use Doctrine\Common\Util\ClassUtils;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator as RelationalPaginator;
@@ -23,6 +24,7 @@ use Jgut\Doctrine\Repository\Repository;
 use Jgut\Doctrine\Repository\RepositoryTrait;
 use Rb\Specification\Doctrine\SpecificationAwareInterface;
 use Rb\Specification\Doctrine\SpecificationRepositoryTrait;
+use Zend\Paginator\Paginator;
 
 /**
  * Relational entity repository.
@@ -46,7 +48,7 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
      *
      * @return string
      */
-    protected function getClassAlias()
+    protected function getClassAlias(): string
     {
         if ($this->classAlias === null) {
             $this->classAlias = strtoupper($this->getEntityName()[0]);
@@ -58,7 +60,7 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
     /**
      * {@inheritdoc}
      */
-    public function getClassName()
+    public function getClassName(): string
     {
         return ClassUtils::getRealClass(parent::getClassName());
     }
@@ -66,7 +68,7 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
     /**
      * {@inheritdoc}
      */
-    protected function getManager()
+    protected function getManager(): EntityManager
     {
         return $this->getEntityManager();
     }
@@ -82,7 +84,7 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
      *
      * @return \Zend\Paginator\Paginator
      */
-    public function findPaginatedBy($criteria, array $orderBy = [], $itemsPerPage = 10)
+    public function findPaginatedBy($criteria, array $orderBy = [], int $itemsPerPage = 10): Paginator
     {
         $queryBuilder = $this->createQueryBuilderFromCriteria($criteria);
         $entityAlias = count($queryBuilder->getRootAliases())
@@ -109,7 +111,7 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
      *
      * @return int
      */
-    public function countBy($criteria)
+    public function countBy($criteria): int
     {
         $queryBuilder = $this->createQueryBuilderFromCriteria($criteria);
         $entityAlias = count($queryBuilder->getRootAliases())
@@ -131,7 +133,7 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
      *
      * @return QueryBuilder
      */
-    protected function createQueryBuilderFromCriteria($criteria)
+    protected function createQueryBuilderFromCriteria($criteria): QueryBuilder
     {
         if ($criteria instanceof QueryBuilder) {
             return $criteria;

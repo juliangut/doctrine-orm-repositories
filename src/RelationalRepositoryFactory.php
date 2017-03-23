@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Jgut\Doctrine\Repository\ORM;
 
+use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Repository\RepositoryFactory;
@@ -47,7 +48,7 @@ class RelationalRepositoryFactory implements RepositoryFactory
     /**
      * {@inheritdoc}
      */
-    public function getRepository(EntityManagerInterface $entityManager, $entityName)
+    public function getRepository(EntityManagerInterface $entityManager, $entityName): ObjectRepository
     {
         /* @var \Doctrine\ORM\EntityManager $entityManager */
         $repositoryHash = $entityManager->getClassMetadata($entityName)->getName() . spl_object_hash($entityManager);
@@ -69,7 +70,7 @@ class RelationalRepositoryFactory implements RepositoryFactory
      *
      * @return \Doctrine\Common\Persistence\ObjectRepository
      */
-    private function createRepository(EntityManager $entityManager, $entityName)
+    private function createRepository(EntityManager $entityManager, $entityName): ObjectRepository
     {
         $metadata = $entityManager->getClassMetadata($entityName);
         $repositoryClassName = $metadata->customRepositoryClassName ?: $this->repositoryClassName;
