@@ -49,9 +49,7 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
     protected function getClassAlias()
     {
         if ($this->classAlias === null) {
-            $className = explode('\\', $this->getClassName());
-
-            $this->classAlias = strtoupper(end($className)[0]);
+            $this->classAlias = strtoupper($this->getEntityName()[0]);
         }
 
         return $this->classAlias;
