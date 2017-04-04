@@ -109,7 +109,7 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
      *
      * @return Paginator
      */
-    protected function paginate(Query $query, int $itemsPerPage = 10) : Paginator
+    protected function paginate(Query $query, int $itemsPerPage = 10): Paginator
     {
         return $this->getPaginator(new RelationalPaginatorAdapter(new RelationalPaginator($query)), $itemsPerPage);
     }
