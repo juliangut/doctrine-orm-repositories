@@ -16,6 +16,7 @@ namespace Jgut\Doctrine\Repository\ORM;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator as RelationalPaginator;
 use Jgut\Doctrine\Repository\EventsTrait;
@@ -97,9 +98,20 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
             }
         }
 
-        $adapter = new RelationalPaginatorAdapter(new RelationalPaginator($queryBuilder->getQuery()));
+        return $this->paginate($queryBuilder->getQuery(), $itemsPerPage);
+    }
 
-        return $this->getPaginator($adapter, $itemsPerPage);
+    /**
+     * Paginate query.
+     *
+     * @param Query $query
+     * @param int   $itemsPerPage
+     *
+     * @return Paginator
+     */
+    protected function paginate(Query $query, int $itemsPerPage = 10) : Paginator
+    {
+        return $this->getPaginator(new RelationalPaginatorAdapter(new RelationalPaginator($query)), $itemsPerPage);
     }
 
     /**
@@ -137,7 +149,9 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
     {
         if ($criteria instanceof QueryBuilder) {
             return $criteria;
-        } elseif (!is_array($criteria)) {
+        }
+
+        if (!is_array($criteria)) {
             throw new \InvalidArgumentException(sprintf(
                 'Criteria must be an array of query fields or a %s',
                 QueryBuilder::class
