@@ -77,28 +77,54 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
     /**
      * {@inheritdoc}
      *
-     * @param array|QueryBuilder $criteria
-     * @param array|null         $orderBy
-     * @param int                $itemsPerPage
-     *
-     * @throws \InvalidArgumentException
+     * @param array      $criteria
+     * @param array|null $orderBy
+     * @param int        $itemsPerPage
      *
      * @return \Zend\Paginator\Paginator
      */
     public function findPaginatedBy($criteria, array $orderBy = [], int $itemsPerPage = 10): Paginator
     {
-        $queryBuilder = $this->createQueryBuilderFromCriteria($criteria);
-        $entityAlias = count($queryBuilder->getRootAliases())
-            ? $queryBuilder->getRootAliases()[0]
-            : $this->getClassAlias();
+        $queryBuilder = $this->getQueryBuilderFromCriteria($criteria, $orderBy);
+
+        return $this->paginate($queryBuilder->getQuery(), $itemsPerPage);
+    }
+
+    /**
+     * Get query builder from criteria array.
+     *
+     * @param array $criteria
+     * @param array $orderBy
+     *
+     * @return QueryBuilder
+     */
+    protected function getQueryBuilderFromCriteria(array $criteria, array $orderBy = []): QueryBuilder
+    {
+        $entityAlias = $this->getClassAlias();
+        $queryBuilder = $this->createQueryBuilder($entityAlias);
+
+        foreach ($criteria as $field => $value) {
+            if (is_null($value)) {
+                $queryBuilder->andWhere(sprintf('%s.%s IS NULL', $entityAlias, $field));
+            } else {
+                $parameter = sprintf('%s_%s', $field, substr(sha1($field), 0, 4));
+
+                $queryBuilder->andWhere(sprintf('%s.%s = :%s', $entityAlias, $field, $parameter));
+                $queryBuilder->setParameter($parameter, $value);
+            }
+        }
 
         if (is_array($orderBy)) {
+            $entityAlias = count($queryBuilder->getRootAliases())
+                ? $queryBuilder->getRootAliases()[0]
+                : $this->getClassAlias();
+
             foreach ($orderBy as $field => $order) {
                 $queryBuilder->addOrderBy($entityAlias . '.' . $field, $order);
             }
         }
 
-        return $this->paginate($queryBuilder->getQuery(), $itemsPerPage);
+        return $queryBuilder;
     }
 
     /**
@@ -119,60 +145,10 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
      *
      * @param array|QueryBuilder $criteria
      *
-     * @throws \InvalidArgumentException
-     *
      * @return int
      */
     public function countBy($criteria): int
     {
-        $queryBuilder = $this->createQueryBuilderFromCriteria($criteria);
-        $entityAlias = count($queryBuilder->getRootAliases())
-            ? $queryBuilder->getRootAliases()[0]
-            : $this->getClassAlias();
-
-        return (int) $queryBuilder
-            ->select('COUNT(' . $entityAlias . ')')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    /**
-     * Create query builder based on provided simple criteria.
-     *
-     * @param array|QueryBuilder $criteria
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return QueryBuilder
-     */
-    protected function createQueryBuilderFromCriteria($criteria): QueryBuilder
-    {
-        if ($criteria instanceof QueryBuilder) {
-            return $criteria;
-        }
-
-        if (!is_array($criteria)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Criteria must be an array of query fields or a %s',
-                QueryBuilder::class
-            ));
-        }
-
-        $entityAlias = $this->getClassAlias();
-        $queryBuilder = $this->createQueryBuilder($entityAlias);
-
-        /* @var array $criteria */
-        foreach ($criteria as $field => $value) {
-            if (is_null($value)) {
-                $queryBuilder->andWhere(sprintf('%s.%s IS NULL', $entityAlias, $field));
-            } else {
-                $parameter = sprintf('%s_%s', $field, substr(sha1($field), 0, 4));
-
-                $queryBuilder->andWhere(sprintf('%s.%s = :%s', $entityAlias, $field, $parameter));
-                $queryBuilder->setParameter($parameter, $value);
-            }
-        }
-
-        return $queryBuilder;
+        return $this->getEntityManager()->getUnitOfWork()->getEntityPersister($this->getEntityName())->count($criteria);
     }
 }

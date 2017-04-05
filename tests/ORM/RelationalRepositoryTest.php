@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Jgut\Doctrine\Repository\ORM\Tests;
 
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Persisters\Entity\BasicEntityPersister;
+use Doctrine\ORM\UnitOfWork;
 use Jgut\Doctrine\Repository\ORM\RelationalRepository;
 use Jgut\Doctrine\Repository\ORM\Tests\Stubs\EntityStub;
 use Jgut\Doctrine\Repository\ORM\Tests\Stubs\RepositoryStub;
@@ -51,57 +51,34 @@ class RelationalRepositoryTest extends TestCase
         static::assertSame($manager, $repository->getManager());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Criteria must be an array of query fields or a Doctrine\ORM\QueryBuilder
-     */
-    public function testInvalidCriteria()
-    {
-        $manager = $this->getMockBuilder(EntityManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        /* @var EntityManager $manager */
-
-        $repository = new RelationalRepository($manager, new ClassMetadata(EntityStub::class));
-
-        $repository->findPaginatedBy('');
-    }
-
     public function testCount()
     {
-        $query = $this->getMockBuilder(AbstractQuery::class)
+        $persister = $this->getMockBuilder(BasicEntityPersister::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $query->expects(static::exactly(2))
-            ->method('getSingleScalarResult')
+        $persister->expects(static::once())
+            ->method('count')
             ->will(static::returnValue(10));
+        /* @var BasicEntityPersister $persister */
+
+        $uow = $this->getMockBuilder(UnitOfWork::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $uow->expects(static::once())
+            ->method('getEntityPersister')
+            ->will(static::returnValue($persister));
+        /* @var UnitOfWork $uow */
 
         $manager = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-
-        $queryBuilder = $this->getMockBuilder(QueryBuilder::class)
-            ->setConstructorArgs([$manager])
-            ->setMethodsExcept(['select', 'from', 'andWhere', 'setParameter', 'add'])
-            ->getMock();
-        $queryBuilder->expects(static::exactly(2))
-            ->method('getQuery')
-            ->will(static::returnValue($query));
-        /* @var QueryBuilder $queryBuilder */
-
         $manager->expects(static::once())
-            ->method('createQueryBuilder')
-            ->will(static::returnValue($queryBuilder));
+            ->method('getUnitOfWork')
+            ->will(static::returnValue($uow));
         /* @var EntityManager $manager */
 
         $repository = new RelationalRepository($manager, new ClassMetadata(EntityStub::class));
 
-        static::assertEquals(10, $repository->countBy($queryBuilder));
-
-        $queryBuilder->expects(static::exactly(2))
-            ->method('getRootAliases')
-            ->will(static::returnValue(['a']));
-
-        static::assertEquals(10, $repository->countBy(['fakeField' => 'fakeValue', 'nullFakeField' => null]));
+        static::assertEquals(10, $repository->countBy([]));
     }
 }
