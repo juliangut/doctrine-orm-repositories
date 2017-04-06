@@ -130,13 +130,28 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
     /**
      * Paginate query.
      *
-     * @param Query $query
-     * @param int   $itemsPerPage
+     * @param Query|QueryBuilder $query
+     * @param int                $itemsPerPage
+     *
+     * @throws \InvalidArgumentException
      *
      * @return Paginator
      */
-    protected function paginate(Query $query, int $itemsPerPage = 10): Paginator
+    protected function paginate($query, int $itemsPerPage = 10): Paginator
     {
+        if ($query instanceof QueryBuilder) {
+            $query = $query->getQuery();
+        }
+
+        if (!$query instanceof Query) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Query must be a Query or QueryBuilder object. "%s" given',
+                    is_object($query) ? get_class($query) : gettype($query)
+                )
+            );
+        }
+
         return $this->getPaginator(new RelationalPaginatorAdapter(new RelationalPaginator($query)), $itemsPerPage);
     }
 
