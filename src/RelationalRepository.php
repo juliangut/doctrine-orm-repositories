@@ -63,7 +63,7 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
      */
     public function getClassName(): string
     {
-        return ClassUtils::getRealClass(parent::getClassName());
+        return ClassUtils::getRealClass(parent::getEntityName());
     }
 
     /**
