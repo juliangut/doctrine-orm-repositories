@@ -38,6 +38,13 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
     use PaginatorTrait;
 
     /**
+     * Class name.
+     *
+     * @var string
+     */
+    protected $className;
+
+    /**
      * Class alias.
      *
      * @var string
@@ -63,7 +70,11 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
      */
     public function getClassName(): string
     {
-        return ClassUtils::getRealClass(parent::getEntityName());
+        if ($this->className === null) {
+            $this->className = ClassUtils::getRealClass(parent::getEntityName());
+        }
+
+        return $this->className;
     }
 
     /**
