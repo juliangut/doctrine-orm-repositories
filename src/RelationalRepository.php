@@ -71,7 +71,7 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
     public function getClassName(): string
     {
         if ($this->className === null) {
-            $this->className = ClassUtils::getRealClass(parent::getEntityName());
+            $this->className = ClassUtils::getRealClass($this->getEntityName());
         }
 
         return $this->className;
@@ -118,9 +118,14 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
             if (is_null($value)) {
                 $queryBuilder->andWhere(sprintf('%s.%s IS NULL', $entityAlias, $field));
             } else {
-                $parameter = sprintf('%s_%s', $field, substr(sha1($field), 0, 4));
+                $parameter = sprintf('%s_%s', $field, substr(sha1($field), 0, 5));
 
-                $queryBuilder->andWhere(sprintf('%s.%s = :%s', $entityAlias, $field, $parameter));
+                if (is_array($value)) {
+                    $queryBuilder->andWhere(sprintf('%s.%s IN (:%s)', $entityAlias, $field, $parameter));
+                } else {
+                    $queryBuilder->andWhere(sprintf('%s.%s = :%s', $entityAlias, $field, $parameter));
+                }
+
                 $queryBuilder->setParameter($parameter, $value);
             }
         }
@@ -141,28 +146,13 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
     /**
      * Paginate query.
      *
-     * @param Query|QueryBuilder $query
-     * @param int                $itemsPerPage
-     *
-     * @throws \InvalidArgumentException
+     * @param Query $query
+     * @param int   $itemsPerPage
      *
      * @return Paginator
      */
-    protected function paginate($query, int $itemsPerPage = 10): Paginator
+    protected function paginate(Query $query, int $itemsPerPage = 10): Paginator
     {
-        if ($query instanceof QueryBuilder) {
-            $query = $query->getQuery();
-        }
-
-        if (!$query instanceof Query) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Query must be a Query or QueryBuilder object. "%s" given',
-                    is_object($query) ? get_class($query) : gettype($query)
-                )
-            );
-        }
-
         return $this->getPaginator(new RelationalPaginatorAdapter(new RelationalPaginator($query)), $itemsPerPage);
     }
 

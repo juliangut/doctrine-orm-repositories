@@ -51,22 +51,6 @@ class RelationalRepositoryTest extends TestCase
         static::assertSame($manager, $repository->getManager());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Query must be a Query or QueryBuilder object. "string" given
-     */
-    public function testInvalidPaginateQuery()
-    {
-        $manager = $this->getMockBuilder(EntityManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        /* @var EntityManager $manager */
-
-        $repository = new RepositoryStub($manager, new ClassMetadata(EntityStub::class));
-
-        $repository->doPaginate('invalid_parameter');
-    }
-
     public function testCount()
     {
         $persister = $this->getMockBuilder(BasicEntityPersister::class)
