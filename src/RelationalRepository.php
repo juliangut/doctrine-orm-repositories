@@ -113,34 +113,44 @@ class RelationalRepository extends EntityRepository implements Repository, Speci
     {
         $entityAlias = $this->getClassAlias();
         $queryBuilder = $this->createQueryBuilder($entityAlias);
+        $entityAlias = count($queryBuilder->getRootAliases()) ? $queryBuilder->getRootAliases()[0] : $entityAlias;
 
         foreach ($criteria as $field => $value) {
-            if (is_null($value)) {
-                $queryBuilder->andWhere(sprintf('%s.%s IS NULL', $entityAlias, $field));
-            } else {
-                $parameter = sprintf('%s_%s', $field, substr(sha1($field), 0, 5));
-
-                if (is_array($value)) {
-                    $queryBuilder->andWhere(sprintf('%s.%s IN (:%s)', $entityAlias, $field, $parameter));
-                } else {
-                    $queryBuilder->andWhere(sprintf('%s.%s = :%s', $entityAlias, $field, $parameter));
-                }
-
-                $queryBuilder->setParameter($parameter, $value);
-            }
+            $this->addQueryCriteria($queryBuilder, $field, $value, $entityAlias);
         }
 
         if (is_array($orderBy)) {
-            $entityAlias = count($queryBuilder->getRootAliases())
-                ? $queryBuilder->getRootAliases()[0]
-                : $this->getClassAlias();
-
             foreach ($orderBy as $field => $order) {
                 $queryBuilder->addOrderBy($entityAlias . '.' . $field, $order);
             }
         }
 
         return $queryBuilder;
+    }
+
+    /**
+     * Add query builder criteria.
+     *
+     * @param QueryBuilder $queryBuilder
+     * @param string       $field
+     * @param mixed        $value
+     * @param string       $entityAlias
+     */
+    protected function addQueryCriteria(QueryBuilder $queryBuilder, string $field, $value, string $entityAlias)
+    {
+        if ($value === null) {
+            $queryBuilder->andWhere(sprintf('%s.%s IS NULL', $entityAlias, $field));
+        } else {
+            $placeholder = sprintf('%s_%s', $field, substr(sha1($field), 0, 5));
+
+            if (is_array($value)) {
+                $queryBuilder->andWhere(sprintf('%s.%s IN (:%s)', $entityAlias, $field, $placeholder));
+            } else {
+                $queryBuilder->andWhere(sprintf('%s.%s = :%s', $entityAlias, $field, $placeholder));
+            }
+
+            $queryBuilder->setParameter($placeholder, $value);
+        }
     }
 
     /**

@@ -13,14 +13,18 @@ declare(strict_types=1);
 
 namespace Jgut\Doctrine\Repository\ORM\Tests;
 
+use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Persisters\Entity\BasicEntityPersister;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\UnitOfWork;
 use Jgut\Doctrine\Repository\ORM\RelationalRepository;
 use Jgut\Doctrine\Repository\ORM\Tests\Stubs\EntityStub;
 use Jgut\Doctrine\Repository\ORM\Tests\Stubs\RepositoryStub;
 use PHPUnit\Framework\TestCase;
+use Zend\Paginator\Paginator;
 
 /**
  * Relational repository tests.
@@ -49,6 +53,61 @@ class RelationalRepositoryTest extends TestCase
         $repository = new RepositoryStub($manager, new ClassMetadata(EntityStub::class));
 
         static::assertSame($manager, $repository->getManager());
+    }
+
+    public function testFindPaginated()
+    {
+        $configuration = $this->getMockBuilder(Configuration::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $configuration->expects(static::any())
+            ->method('getDefaultQueryHints')
+            ->will(static::returnValue([]));
+        $configuration->expects(static::once())
+            ->method('isSecondLevelCacheEnabled')
+            ->will(static::returnValue(false));
+        /* @var Configuration $configuration */
+
+        $manager = $this->getMockBuilder(EntityManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $manager->expects(static::any())
+            ->method('getConfiguration')
+            ->will(static::returnValue($configuration));
+
+        $query = new Query($manager);
+
+        $queryBuilder = $this->getMockBuilder(QueryBuilder::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $queryBuilder->expects(static::once())
+            ->method('select')
+            ->will(static::returnSelf());
+        $queryBuilder->expects(static::once())
+            ->method('from')
+            ->will(static::returnSelf());
+        $queryBuilder->expects(static::once())
+            ->method('getQuery')
+            ->will(static::returnValue($query));
+        /* @var QueryBuilder $queryBuilder */
+
+        $manager->expects(static::once())
+            ->method('createQueryBuilder')
+            ->will(static::returnValue($queryBuilder));
+        /* @var EntityManager $manager */
+
+        $repository = new RepositoryStub($manager, new ClassMetadata(EntityStub::class));
+
+        $paginator = $repository->findPaginatedBy(
+            [
+                'fieldOne' => null,
+                'fieldTwo' => 1,
+                'fieldThree' => ['a', 'b', 'c'],
+            ],
+            ['fakeField' => 'ASC']
+        );
+
+        static::assertInstanceOf(Paginator::class, $paginator);
     }
 
     public function testCount()

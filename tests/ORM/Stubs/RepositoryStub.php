@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace Jgut\Doctrine\Repository\ORM\Tests\Stubs;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query;
 use Jgut\Doctrine\Repository\ORM\RelationalRepository;
+use Zend\Paginator\Adapter\AdapterInterface;
 use Zend\Paginator\Paginator;
 
 /**
@@ -31,12 +33,13 @@ class RepositoryStub extends RelationalRepository
     }
 
     /**
-     * @param \Doctrine\ORM\Query|\Doctrine\ORM\QueryBuilder $query
+     * @param AdapterInterface $adapter
+     * @param int              $itemsPerPage
      *
      * @return Paginator
      */
-    public function doPaginate($query): Paginator
+    protected function getPaginator(AdapterInterface $adapter, int $itemsPerPage): Paginator
     {
-        return parent::paginate($query, 10);
+        return new Paginator($adapter);
     }
 }
