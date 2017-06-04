@@ -177,4 +177,32 @@ class RelationalRepository extends EntityRepository implements Repository, Entit
     {
         return $this->getEntityManager()->getUnitOfWork()->getEntityPersister($this->getEntityName())->count($criteria);
     }
+
+    /**
+     * Begin transaction.
+     */
+    public function beginTransaction()
+    {
+        $this->getManager()->getConnection()->beginTransaction();
+    }
+
+    /**
+     * Commit transaction.
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function commit()
+    {
+        $this->getManager()->getConnection()->commit();
+    }
+
+    /**
+     * Rollback transaction.
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function rollBack()
+    {
+        $this->getManager()->getConnection()->rollBack();
+    }
 }

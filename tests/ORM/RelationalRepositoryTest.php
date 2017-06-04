@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Jgut\Doctrine\Repository\ORM\Tests;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -139,5 +140,35 @@ class RelationalRepositoryTest extends TestCase
         $repository = new RelationalRepository($manager, new ClassMetadata(EntityStub::class));
 
         static::assertEquals(10, $repository->countBy([]));
+    }
+
+    public function testTransactions()
+    {
+        $connection = $this->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connection->expects(static::exactly(2))
+            ->method('beginTransaction');
+        $connection->expects(static::once())
+            ->method('commit');
+        $connection->expects(static::once())
+            ->method('rollBack');
+        /* @var Connection $connection */
+
+        $manager = $this->getMockBuilder(EntityManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $manager->expects(static::any())
+            ->method('getConnection')
+            ->will(static::returnValue($connection));
+        /* @var EntityManager $manager */
+
+        $repository = new RelationalRepository($manager, new ClassMetadata(EntityStub::class));
+
+        $repository->beginTransaction();
+        $repository->commit();
+
+        $repository->beginTransaction();
+        $repository->rollBack();
     }
 }
