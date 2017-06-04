@@ -113,7 +113,7 @@ class RelationalRepository extends EntityRepository implements Repository, Entit
     {
         $entityAlias = $this->getClassAlias();
         $queryBuilder = $this->createQueryBuilder($entityAlias);
-        $entityAlias = count($queryBuilder->getRootAliases()) ? $queryBuilder->getRootAliases()[0] : $entityAlias;
+        $entityAlias = !empty($queryBuilder->getRootAliases()) ? $queryBuilder->getRootAliases()[0] : $entityAlias;
 
         foreach ($criteria as $field => $value) {
             $this->addQueryCriteria($queryBuilder, $field, $value, $entityAlias);
