@@ -56,7 +56,7 @@ $entityManager = \Doctrine\ORM\EntityManager::create([], $config);
 
 Head to [juliangut/doctrine-base-repositories](https://github.com/juliangut/doctrine-base-repositories) for a list of new methods provided by the repository
 
-Additionally [Specification pattern](https://en.wikipedia.org/wiki/Specification_pattern) is supported thanks to [rikbruil/Doctrine-Specification](https://github.com/rikbruil/Doctrine-Specification)
+Additionally [Specification pattern](https://en.wikipedia.org/wiki/Specification_pattern) is supported thanks to [happyr/doctrine-specification](https://github.com/Happyr/Doctrine-Specification)
 
 ## Contributing
 

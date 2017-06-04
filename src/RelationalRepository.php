@@ -19,23 +19,23 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator as RelationalPaginator;
+use Happyr\DoctrineSpecification\EntitySpecificationRepositoryInterface;
+use Happyr\DoctrineSpecification\EntitySpecificationRepositoryTrait;
 use Jgut\Doctrine\Repository\EventsTrait;
 use Jgut\Doctrine\Repository\PaginatorTrait;
 use Jgut\Doctrine\Repository\Repository;
 use Jgut\Doctrine\Repository\RepositoryTrait;
-use Rb\Specification\Doctrine\SpecificationAwareInterface;
-use Rb\Specification\Doctrine\SpecificationRepositoryTrait;
 use Zend\Paginator\Paginator;
 
 /**
  * Relational entity repository.
  */
-class RelationalRepository extends EntityRepository implements Repository, SpecificationAwareInterface
+class RelationalRepository extends EntityRepository implements Repository, EntitySpecificationRepositoryInterface
 {
-    use SpecificationRepositoryTrait;
     use RepositoryTrait;
     use EventsTrait;
     use PaginatorTrait;
+    use EntitySpecificationRepositoryTrait;
 
     /**
      * Class name.
