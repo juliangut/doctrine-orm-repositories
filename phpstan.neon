@@ -1,0 +1,3 @@
+parameters:
+  ignoreErrors:
+    - '/Parameter #1 \$entityManager of method Jgut\\Doctrine\\Repository\\ORM\\RelationalRepositoryFactory::createRepository\(\) expects Doctrine\\ORM\\EntityManager, Doctrine\\ORM\\EntityManagerInterface given/'
