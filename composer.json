@@ -25,7 +25,7 @@
   "require": {
     "php": "^7.0",
     "doctrine/orm": "^2.4",
-    "juliangut/doctrine-base-repositories": "dev-master",
+    "juliangut/doctrine-base-repositories": "^1.0",
     "happyr/doctrine-specification": "^0.7.2"
   },
   "require-dev": {

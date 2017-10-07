@@ -22,6 +22,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator as RelationalPaginator;
 use Happyr\DoctrineSpecification\EntitySpecificationRepositoryInterface;
 use Happyr\DoctrineSpecification\EntitySpecificationRepositoryTrait;
 use Jgut\Doctrine\Repository\EventsTrait;
+use Jgut\Doctrine\Repository\FiltersTrait;
 use Jgut\Doctrine\Repository\PaginatorTrait;
 use Jgut\Doctrine\Repository\Repository;
 use Jgut\Doctrine\Repository\RepositoryTrait;
@@ -34,6 +35,7 @@ class RelationalRepository extends EntityRepository implements Repository, Entit
 {
     use RepositoryTrait;
     use EventsTrait;
+    use FiltersTrait;
     use PaginatorTrait;
     use EntitySpecificationRepositoryTrait;
 
@@ -75,6 +77,14 @@ class RelationalRepository extends EntityRepository implements Repository, Entit
         }
 
         return $this->className;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getFilterCollection()
+    {
+        return $this->getManager()->getFilters();
     }
 
     /**

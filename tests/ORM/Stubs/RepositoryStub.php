@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Jgut\Doctrine\Repository\ORM\Tests\Stubs;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\FilterCollection;
 use Jgut\Doctrine\Repository\ORM\RelationalRepository;
 use Zend\Paginator\Adapter\AdapterInterface;
 use Zend\Paginator\Paginator;
@@ -23,6 +24,14 @@ use Zend\Paginator\Paginator;
  */
 class RepositoryStub extends RelationalRepository
 {
+    /**
+     * @return FilterCollection
+     */
+    public function getFilterCollection(): FilterCollection
+    {
+        return parent::getFilterCollection();
+    }
+
     /**
      * @return EntityManager
      */

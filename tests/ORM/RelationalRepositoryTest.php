@@ -19,6 +19,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Persisters\Entity\BasicEntityPersister;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\FilterCollection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\UnitOfWork;
 use Jgut\Doctrine\Repository\ORM\RelationalRepository;
@@ -42,6 +43,26 @@ class RelationalRepositoryTest extends TestCase
         $repository = new RelationalRepository($manager, new ClassMetadata(EntityStub::class));
 
         static::assertEquals(EntityStub::class, $repository->getClassName());
+    }
+
+    public function testFilterCollection()
+    {
+        $filterCollection = $this->getMockBuilder(FilterCollection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        /* @var FilterCollection $filterCollection */
+
+        $manager = $this->getMockBuilder(EntityManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $manager->expects(static::any())
+            ->method('getFilters')
+            ->will(static::returnValue($filterCollection));
+        /* @var EntityManager $manager */
+
+        $repository = new RepositoryStub($manager, new ClassMetadata(EntityStub::class));
+
+        static::assertSame($filterCollection, $repository->getFilterCollection());
     }
 
     public function testEntityManager()
