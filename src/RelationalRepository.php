@@ -104,7 +104,7 @@ class RelationalRepository extends EntityRepository implements Repository, Entit
      *
      * @return \Zend\Paginator\Paginator
      */
-    public function findPaginatedBy($criteria, array $orderBy = [], int $itemsPerPage = 10): Paginator
+    public function findPaginatedBy($criteria, array $orderBy = null, int $itemsPerPage = 10): Paginator
     {
         $queryBuilder = $this->getQueryBuilderFromCriteria($criteria, $orderBy);
 
@@ -114,12 +114,12 @@ class RelationalRepository extends EntityRepository implements Repository, Entit
     /**
      * Get query builder from criteria array.
      *
-     * @param array $criteria
-     * @param array $orderBy
+     * @param array      $criteria
+     * @param array|null $orderBy
      *
      * @return QueryBuilder
      */
-    protected function getQueryBuilderFromCriteria(array $criteria, array $orderBy = []): QueryBuilder
+    protected function getQueryBuilderFromCriteria(array $criteria, array $orderBy = null): QueryBuilder
     {
         $entityAlias = $this->getClassAlias();
         $queryBuilder = $this->createQueryBuilder($entityAlias);
