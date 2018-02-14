@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Jgut\Doctrine\Repository\ORM;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -77,6 +78,23 @@ class RelationalRepository extends EntityRepository implements Repository, Entit
         }
 
         return $this->className;
+    }
+
+    /**
+     * Finds entities by a set of criteria.
+     *
+     * @param array      $criteria
+     * @param array|null $orderBy
+     * @param int|null   $limit
+     * @param int|null   $offset
+     *
+     * @return ArrayCollection
+     *
+     * @codeCoverageIgnore
+     */
+    public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+    {
+        return new ArrayCollection(parent::findBy($criteria, $orderBy, $limit, $offset));
     }
 
     /**
